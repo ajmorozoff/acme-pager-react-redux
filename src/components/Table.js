@@ -1,23 +1,25 @@
 /* eslint-disable react/jsx-wrap-multilines */
-
 import React from 'react';
 const { Component } = React;
-const verbose = [
-    'id',
-    'createdAt',
-    'updatedAt'
-];
+import { store } from '../redux/store';
 
 class Table extends Component {
     constructor(props) {
         super();
-        this.state = {
-            employees: props.employees,
-            columns: props.columns,
-        }
+        this.state = {...store.getState(), columns: props.columns }
+    }
+
+    componentDidMount() {
+        this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
+
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
     }
 
     render() {
+
         const { columns, employees } = this.state;
         const dataFields = Object.keys(columns);
         const tableHeaders = Object.values(columns);

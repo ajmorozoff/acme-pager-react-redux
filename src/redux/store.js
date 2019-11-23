@@ -1,31 +1,45 @@
 import { createStore } from 'redux';
-import axios from 'axios';
 
-const UPDATE_PAGE = 'UPDATE_PAGE';
+const SET_PAGE = 'SET_PAGE';
+const SET_EMPLOYEES = 'SET_EMPLOYEES';
+
 
 const initState = {
     employees: [],
     currentPage: 0,
 }
 
-const updatePage = (newPage) => {
+const setEmployees = (employees) =>  {
     return {
-        type: UPDATE_PAGE,
-        newPage,
+        type: SET_EMPLOYEES,
+        employees,
     }
 }
 
-const employeeReducer = async(state = initState, action) => {
-    if (action.type === UPDATE_PAGE) {
-        const response = (await axios.get(`/api/employees/${action.newPage}`)).data;
-        return {...state, currentPage: action.newPage, employees: response};
+const updatePage = (currentPage) => {
+    return {
+        type: SET_PAGE,
+        currentPage,
     }
-    return state;
+}
+
+const employeeReducer = (state = initState, action) => {
+    switch (action.type) {
+        case SET_PAGE:
+            return {...state, currentPage: parseInt(action.currentPage, 10)};
+        case SET_EMPLOYEES:
+            return {...state, employees: action.employees};
+        default:
+            return state;
+    }
 }
 
 const store = createStore(employeeReducer);
 
 export {
     store,
-    updatePage
+    updatePage,
+    setEmployees,
+    SET_EMPLOYEES,
+    SET_PAGE
 }

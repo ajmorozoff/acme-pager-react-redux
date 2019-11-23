@@ -4,7 +4,8 @@ import axios from 'axios';
 import Table from './components/Table';
 import Header from './components/Header';
 import Pager from './components/Pager';
-import { store, updatePage } from './redux/store';
+import { HashRouter, Route } from 'react-router-dom';
+import { store, SET_EMPLOYEES, SET_PAGE } from './redux/store';
 
 const { Component } = React;
 const root = document.querySelector('#root');
@@ -17,30 +18,43 @@ const columns = {
 
 
 class App extends Component {
-    constructor(props) {
+    constructor() {
         super();
-        this.state = {
-            employees: [],
-            currentPage: 0,
-            totalPages: 0,
-        };
+        this.state =  {...store.getState(), totalPages: 0 };
     }
 
-    async fetchPageData() {
-        const response = (await axios.get(`/api/employees/${this.state.currentPage}`)).data;
-        const { count, rows } = response;
-        this.setState({
-            employees: rows,
-            totalPages: Math.ceil(count / rows.length),
-        });
+    async fetchPageData(page) {
+        return (await axios.get(`/api/employees/${page}`)).data;
     }
 
-    componentDidMount () {
-        this.fetchPageData();
+    async componentDidMount() {
+        this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
+
+        const {rows, count} = await this.fetchPageData(this.state.currentPage);
+        store.dispatch({employees: rows, type: SET_EMPLOYEES});
+        this.setState({totalPages: Math.ceil( count / rows.length)});
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
+    async componentDidUpdate(prevProps) {
+        let curPage = this.props.match.params.page;
+        if (curPage !== prevProps.match.params.page) {
+            if (curPage) {
+                store.dispatch({currentPage: curPage, type: SET_PAGE});
+            }
+            else {
+                store.dispatch({currentPage: 0, type: SET_PAGE});
+            }
+            const { rows } = await this.fetchPageData(curPage || 0);
+            store.dispatch({employees: rows, type: SET_EMPLOYEES});
+        }
     }
 
     render() {
-        const { employees, currentPage, totalPages } = this.state;
+        const { employees, totalPages } = this.state;
         if (!employees.length) {
             return (
                 <div id="app">
@@ -51,11 +65,21 @@ class App extends Component {
         return (
             <div id="app">
                 <Header />
-                <Table employees={employees} columns={columns} />
-                <Pager currentPage={currentPage} totalPages={totalPages} />
+                <Table columns={columns} />
+                <Pager totalPages={totalPages} />
             </div>
         )
     }
 }
 
-ReactDOM.render(<App />, root);
+const Root = () => (
+      <HashRouter>
+        <Route
+            path="/:page?"
+            component={App}
+        />
+
+      </HashRouter>
+  )
+
+ReactDOM.render(<Root />, root);
