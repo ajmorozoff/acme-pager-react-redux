@@ -1,19 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Redux from 'redux';
 import axios from 'axios';
 import Table from './components/Table';
 import Header from './components/Header';
 import Pager from './components/Pager';
+import { store, updatePage } from './redux/store';
 
 const { Component } = React;
 const root = document.querySelector('#root');
+const columns = {
+    firstName: "First Name",
+    lastName: "Last Name",
+    email: "Email",
+    title: "Job Title",
+}
+
 
 class App extends Component {
     constructor(props) {
         super();
         this.state = {
-            users: [],
+            employees: [],
             currentPage: 0,
             totalPages: 0,
         };
@@ -23,7 +30,7 @@ class App extends Component {
         const response = (await axios.get(`/api/employees/${this.state.currentPage}`)).data;
         const { count, rows } = response;
         this.setState({
-            users: rows,
+            employees: rows,
             totalPages: Math.ceil(count / rows.length),
         });
     }
@@ -33,8 +40,8 @@ class App extends Component {
     }
 
     render() {
-        const { users, currentPage, totalPages } = this.state;
-        if (!users.length) {
+        const { employees, currentPage, totalPages } = this.state;
+        if (!employees.length) {
             return (
                 <div id="app">
                     Loading results...
@@ -44,7 +51,7 @@ class App extends Component {
         return (
             <div id="app">
                 <Header />
-                <Table users={users} verbose={false} />
+                <Table employees={employees} columns={columns} />
                 <Pager currentPage={currentPage} totalPages={totalPages} />
             </div>
         )
