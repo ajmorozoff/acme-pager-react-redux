@@ -1,6 +1,12 @@
 body {
     font-family: sans-serif;
     margin: 2rem;
+    background-color: #1C2842;
+    color: #F3F5F9;
+}
+
+h1 {
+    color: #E5E8ED;
 }
 
 a {
@@ -12,27 +18,35 @@ table {
     display: block;
     overflow: auto;
     height: 500px;
+    border-collapse: collapse;
 
-    border-top: 1px solid rgb(219, 219, 219);
-    border-bottom: 1px solid rgb(219, 219, 219);
+    border-top: 1px solid #5B6987;
+    border-bottom: 1px solid #5B6987;
     border-spacing: 0px;
 }
 
 th {
     text-align: left;
-    border-bottom: 1px solid rgb(219, 219, 219);
-    background-color: rgb(75, 139, 212);
-    color: white;
+    background-color: #5B6987;
     font-weight: 700;
+    height: 1.5rem;
     width: 100%;
 }
 
-tbody > tr {
+
+tr {
     height: 2.5rem;
 }
 
+
 td, th {
-    width: 25%;
+    width: 100vw;
+}
+
+tbody td {
+    border-top: 1px solid #5B6987;
+    border-bottom: 1px solid #5B6987;
+    color: #E5E8ED;
 }
 
 .pager-container {
@@ -43,17 +57,25 @@ td, th {
 }
 
 .page-button {
-    flex-basis: 1rem;
+    flex-basis: 2rem;
+    border-radius: 2rem;
     text-align: center;
-
 }
 
 .page-button:hover {
     font-weight: bold;
 }
 
+.active {
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: rgb(75, 139, 212);
+}
 
-.page-button:disabled {
+.page-button-disabled {
+    flex-basis: 1rem;
+    text-align: center;
     pointer-events: none; 
     cursor: default; 
+    opacity: 30%;
 }

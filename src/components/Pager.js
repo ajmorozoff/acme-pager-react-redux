@@ -2,28 +2,12 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 const { Component } = React;
-import { Link } from 'react-router-dom';
-import { store } from '../redux/store';
+import { NavLink, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 class Pager extends Component {
-    constructor(props) {
-        super();
-        this.state = {
-            ...store.getState()
-        };
-    }
-
-    componentDidMount() {
-        this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
-    }
-
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
-
     render() {
-        const { currentPage } = this.state;
-        const { totalPages } = this.props;
+        const { currentPage, totalPages } = this.props;
         let pagerButtons = [];
         for (let i = 0; i < totalPages; i++) {
             pagerButtons.push(i);
@@ -33,22 +17,21 @@ class Pager extends Component {
             <div id="page-control" className="pager-container">
                     <Link
                     to={ currentPage ? `/${currentPage - 1}` : '/0'}
-                    className="page-button"
-                    disabled={currentPage ? "" : "disabled"}>
+                    className={currentPage ? "page-button" : "page-button-disabled"}>
                         Previous
                     </Link>
                 {
                     pagerButtons.map(page =>
-                    <Link
+                    <NavLink
                     to={`/${page}`}
-                    className={ page === currentPage ? 'page-button selected' : 'page-button selected'}>
+                    className={ page === currentPage ? 'page-button selected' : 'page-button selected'}
+                    activeClassName="active">
                         {page + 1}
-                    </Link>)
+                    </NavLink>)
                 }
                     <Link
                     to={ currentPage + 1 === totalPages ? `/${currentPage}` : `/${currentPage + 1}`}
-                    className="page-button"
-                    disabled={currentPage + 1 === totalPages ? "disabled" : ""}>
+                    className={currentPage + 1 === totalPages ? "page-button-disabled" : "page-button"}>
                         Next
                     </Link>
             </div>
@@ -56,4 +39,9 @@ class Pager extends Component {
     }
 }
 
-export default Pager;
+const mapStateToProps = (state) => {
+    const { totalPages } = state;
+    return { totalPages };
+}
+
+export default connect(mapStateToProps, null)(Pager);

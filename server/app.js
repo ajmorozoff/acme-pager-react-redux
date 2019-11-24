@@ -38,4 +38,23 @@ app.get('/api/employees/:page?', (req, res, next) => {
   });
 });
 
+app.delete('/api/employees/:id', async(req, res, next) => {
+  try {
+    const response = await Employee.destroy({
+      where: {
+        id: req.params.id,
+      }
+    })
+    if (response) {
+      res.status(204).send();
+    }
+    else {
+      res.status(404).send('employee not found');
+    }
+  }
+  catch (e) {
+    next(e);
+  }
+})
+
 module.exports = { app };

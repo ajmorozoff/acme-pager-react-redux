@@ -2,33 +2,20 @@ import { createStore } from 'redux';
 
 const SET_PAGE = 'SET_PAGE';
 const SET_EMPLOYEES = 'SET_EMPLOYEES';
-
+const SET_TOTAL = 'SET_TOTAL';
 
 const initState = {
     employees: [],
     currentPage: 0,
-}
-
-const setEmployees = (employees) =>  {
-    return {
-        type: SET_EMPLOYEES,
-        employees,
-    }
-}
-
-const updatePage = (currentPage) => {
-    return {
-        type: SET_PAGE,
-        currentPage,
-    }
+    totalPages: 0
 }
 
 const employeeReducer = (state = initState, action) => {
     switch (action.type) {
-        case SET_PAGE:
-            return {...state, currentPage: parseInt(action.currentPage, 10)};
         case SET_EMPLOYEES:
-            return {...state, employees: action.employees};
+            return {...state, employees: action.payload.employees};
+        case SET_TOTAL:
+            return {...state, totalPages: action.payload.totalPages};
         default:
             return state;
     }
@@ -38,8 +25,7 @@ const store = createStore(employeeReducer);
 
 export {
     store,
-    updatePage,
-    setEmployees,
     SET_EMPLOYEES,
-    SET_PAGE
+    SET_PAGE,
+    SET_TOTAL,
 }

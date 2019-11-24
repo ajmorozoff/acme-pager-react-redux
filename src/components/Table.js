@@ -1,39 +1,39 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 const { Component } = React;
-import { store } from '../redux/store';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import { SET_EMPLOYEES } from '../redux/store';
 
 class Table extends Component {
-    constructor(props) {
+    constructor() {
         super();
-        this.state = {...store.getState(), columns: props.columns }
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    componentDidMount() {
-        this.unsubscribe = store.subscribe(() => this.setState(store.getState()));
-
+    async handleClick(id) {
+        const page = this.props.match.params.page || 0;
+        await axios.delete(`/api/employees/${id}`);
+        this.props.setEmployees(page);
     }
 
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
 
     render() {
-
-        const { columns, employees } = this.state;
+        const { columns, employees } = this.props;
         const dataFields = Object.keys(columns);
         const tableHeaders = Object.values(columns);
         return (
-            <div id="table-container" className="table-container">
+            <div id="table-container">
                 <table>
                     <thead>
-                        <tr className="table-header">
+                        <tr>
                             {
                                 tableHeaders.map((col, idx) => <th key={idx}>{col}</th>)
                             }
+                            <th>Delete</th>
                         </tr>
                     </thead>
-                    <tbody className="table-body">
+                    <tbody>
                         {
                             employees.map(emp =>
                                 <tr key={emp.id}>
@@ -45,6 +45,9 @@ class Table extends Component {
                                             }
                                         })
                                     }
+                                    <td>
+                                        <button onClick={() => this.handleClick(emp.id)}>Delete</button>
+                                    </td>
                                 </tr>)
                         }
                     </tbody>
@@ -54,4 +57,22 @@ class Table extends Component {
     }
 }
 
-export default Table;
+const mapStateToProps = (state) => {
+    const { employees } = state;
+    return { employees };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setEmployees: async(page) => dispatch(
+            {
+                payload: {
+                    employees: (await axios.get(`/api/employees/${page}`)).data.rows,
+                },
+                type: SET_EMPLOYEES
+            }
+        ),
+    }
+}
+
+export default connect(mapStateToProps, null)(Table);
