@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 const { Component } = React;
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { store } from '../redux/store';
 
 class Pager extends Component {
@@ -31,16 +31,26 @@ class Pager extends Component {
 
         return (
             <div id="page-control" className="pager-container">
-                    <NavLink to={ currentPage ? `/${currentPage - 1}` : '/0'} className="pager-button">Previous</NavLink>
+                    <Link
+                    to={ currentPage ? `/${currentPage - 1}` : '/0'}
+                    className="page-button"
+                    disabled={currentPage ? "" : "disabled"}>
+                        Previous
+                    </Link>
                 {
                     pagerButtons.map(page =>
-                    <NavLink
+                    <Link
                     to={`/${page}`}
                     className={ page === currentPage ? 'page-button selected' : 'page-button selected'}>
                         {page + 1}
-                    </NavLink>)
+                    </Link>)
                 }
-                    <NavLink to={ currentPage + 1 === totalPages ? `/${currentPage}` : `/${currentPage + 1}`} className="pager-button">Next</NavLink>
+                    <Link
+                    to={ currentPage + 1 === totalPages ? `/${currentPage}` : `/${currentPage + 1}`}
+                    className="page-button"
+                    disabled={currentPage + 1 === totalPages ? "disabled" : ""}>
+                        Next
+                    </Link>
             </div>
         )
     }

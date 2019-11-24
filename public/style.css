@@ -1,9 +1,59 @@
 body {
     font-family: sans-serif;
+    margin: 2rem;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+table {
+    display: block;
+    overflow: auto;
+    height: 500px;
+
+    border-top: 1px solid rgb(219, 219, 219);
+    border-bottom: 1px solid rgb(219, 219, 219);
+    border-spacing: 0px;
+}
+
+th {
+    text-align: left;
+    border-bottom: 1px solid rgb(219, 219, 219);
+    background-color: rgb(75, 139, 212);
+    color: white;
+    font-weight: 700;
+    width: 100%;
+}
+
+tbody > tr {
+    height: 2.5rem;
+}
+
+td, th {
+    width: 25%;
 }
 
 .pager-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    margin: 1rem;
+}
+
+.page-button {
+    flex-basis: 1rem;
+    text-align: center;
+
+}
+
+.page-button:hover {
+    font-weight: bold;
+}
+
+
+.page-button:disabled {
+    pointer-events: none; 
+    cursor: default; 
 }

@@ -25,28 +25,30 @@ class Table extends Component {
         const tableHeaders = Object.values(columns);
         return (
             <div id="table-container" className="table-container">
-                <thead>
-                    <tr className="table-header">
+                <table>
+                    <thead>
+                        <tr className="table-header">
+                            {
+                                tableHeaders.map((col, idx) => <th key={idx}>{col}</th>)
+                            }
+                        </tr>
+                    </thead>
+                    <tbody className="table-body">
                         {
-                            tableHeaders.map((col, idx) => <th key={idx}>{col}</th>)
+                            employees.map(emp =>
+                                <tr key={emp.id}>
+                                    {
+                                        Object.keys(emp).map(key => {
+                                            if (dataFields.includes(key))
+                                            {
+                                                return <td>{emp[key]}</td>
+                                            }
+                                        })
+                                    }
+                                </tr>)
                         }
-                    </tr>
-                </thead>
-                <tbody className="table-body">
-                    {
-                        employees.map(emp =>
-                            <tr key={emp.id}>
-                                {
-                                    Object.keys(emp).map(key => {
-                                        if (dataFields.includes(key))
-                                        {
-                                            return <td>{emp[key]}</td>
-                                        }
-                                    })
-                                }
-                            </tr>)
-                    }
-                </tbody>
+                    </tbody>
+                </table>
             </div>
         )
     }
